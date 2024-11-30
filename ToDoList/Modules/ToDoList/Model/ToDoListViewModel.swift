@@ -6,7 +6,32 @@
 //
 
 struct ToDoListViewModel {
+    let rows: [Row]
+}
+
+
+// MARK: - ToDoListViewModel
+extension ToDoListViewModel {
     
-    // Here you should implement view model
+    enum Row {
+        
+        case base(TableCellConfiguratorProtocol)
+        
+        
+        // MARK: - Properties
+        
+        var configurator: TableCellConfiguratorProtocol {
+            
+            switch self {
+            case .base(let configurator):
+                return configurator
+            }
+        }
+        
+        var id: String {
+            type(of: configurator).id
+        }
+        
+    }
     
 }

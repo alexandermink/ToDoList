@@ -34,5 +34,12 @@ extension AppCoordinator: AppCoordinatorInput {
     
     func showNeededFlow() {
         rootNavigationController.viewControllers.append(ToDoListAssembly.assembleModule())
+        
+//        if authorizationManager.isAuthorized {
+//            rootNavigationController.viewControllers.append(LoginAssembly.assembleModule())
+//        } else {
+//            rootNavigationController.viewControllers.append(RegistrationAssembly.assembleModule())
+//        }
+        
     }
 }

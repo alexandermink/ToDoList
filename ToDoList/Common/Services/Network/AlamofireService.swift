@@ -8,12 +8,12 @@
 import Alamofire
 
 protocol AlamofireServiceInput {
-    func request<T: Encodable, U: Decodable>(
+    func request<T: Codable>(
         endpoint: String,
         method: HTTPMethod,
-        parameters: T,
+        parameters: [String: Any]?,
         headers: HTTPHeaders?,
-        completion: @escaping (Result<U, Error>) -> Void
+        completion: @escaping (Result<T, Error>) -> Void
     )
 }
 
@@ -41,12 +41,12 @@ final class AlamofireService {
 // MARK: - AlamofireServiceInput
 extension AlamofireService: AlamofireServiceInput {
     
-    func request<T: Encodable, U: Decodable>(
+    func request<T: Codable>(
         endpoint: String,
         method: HTTPMethod,
-        parameters: T,
+        parameters: [String: Any]? = nil,
         headers: HTTPHeaders?,
-        completion: @escaping (Result<U, Error>) -> Void
+        completion: @escaping (Result<T, Error>) -> Void
     ) {
         let url = "\(Locals.baseURL)\(endpoint)"
 
@@ -54,11 +54,11 @@ extension AlamofireService: AlamofireServiceInput {
             url,
             method: method,
             parameters: parameters,
-            encoder: JSONParameterEncoder.default,
+            encoding: parameters == nil ? URLEncoding.default : JSONEncoding.default,
             headers: headers
         )
         .validate()
-        .responseDecodable(of: U.self) { response in
+        .responseDecodable(of: T.self) { response in
             switch response.result {
             case .success(let decodedResponse):
                 completion(.success(decodedResponse))

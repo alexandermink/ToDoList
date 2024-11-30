@@ -5,7 +5,9 @@
 //  Created Александр Минк on 29.11.2024.
 //
 
-protocol ToDoListInteractorInput {  }
+protocol ToDoListInteractorInput { 
+    func fetchTasks(completion: @escaping (ToDoListModel) -> Void)
+}
 
 final class ToDoListInteractor {
     
@@ -26,4 +28,20 @@ final class ToDoListInteractor {
 
 
 // MARK: - ToDoListInteractorInput
-extension ToDoListInteractor: ToDoListInteractorInput {  }
+extension ToDoListInteractor: ToDoListInteractorInput { 
+    
+    func fetchTasks(completion: @escaping (ToDoListModel) -> Void) {
+        
+        networkService.fetchTasks { response in
+            switch response {
+            case .success(let data):
+                completion(data)
+            case .failure(let error):
+                // TODO: доработать alert
+                print(error.localizedDescription)
+            }
+        }
+        // else coredata fetch
+    }
+    
+}

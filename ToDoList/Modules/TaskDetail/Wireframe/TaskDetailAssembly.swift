@@ -7,7 +7,7 @@
 
 final class TaskDetailAssembly: Assembly {
     
-    static func assembleModule() -> Module {
+    static func assembleModule(with model: TransitionModel) -> Module {
         
         let view = TaskDetailViewController()
         let router = TaskDetailRouter(transition: view)
@@ -27,6 +27,8 @@ final class TaskDetailAssembly: Assembly {
 // MARK: - Model
 extension TaskDetailAssembly {
     
-    struct Model: TransitionModel {  }
+    struct Model: TransitionModel { 
+        let task: ToDoTask
+    }
     
 }

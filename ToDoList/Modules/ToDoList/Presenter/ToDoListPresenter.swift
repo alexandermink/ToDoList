@@ -5,7 +5,9 @@
 //  Created Александр Минк on 29.11.2024.
 //
 
-protocol ToDoListViewOutput: ViewOutput {  }
+protocol ToDoListViewOutput: ViewOutput { 
+    func fetchTasks()
+}
 
 protocol ToDoListInteractorOutput: AnyObject {  }
 
@@ -33,7 +35,15 @@ final class ToDoListPresenter {
 // MARK: - ToDoListViewOutput
 extension ToDoListPresenter: ToDoListViewOutput {
     
-    func viewIsReady() {  }
+    func viewIsReady() { 
+        fetchTasks()
+    }
+    
+    func fetchTasks() {
+        interactor?.fetchTasks { tasksModel in
+            self.view?.update(with: self.dataConverter.convert(tasksModel))
+        }
+    }
     
 }
 

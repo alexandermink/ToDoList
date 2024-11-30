@@ -5,7 +5,9 @@
 //  Created Александр Минк on 29.11.2024.
 //
 
-protocol ToDoListRouterInput {  }
+protocol ToDoListRouterInput { 
+    func openTaskDetail(task: ToDoTask)
+}
 
 final class ToDoListRouter {
     
@@ -24,4 +26,11 @@ final class ToDoListRouter {
 
 
 // MARK: - ToDoListRouterInput
-extension ToDoListRouter: ToDoListRouterInput {  }
+extension ToDoListRouter: ToDoListRouterInput { 
+    
+    func openTaskDetail(task: ToDoTask) {
+        print("Open TaskDetail Module")
+//        transition.push(with: TaskDetailAssembly.Model(task: task), openModuleType: TaskDetailAssembly.self)
+    }
+    
+}

@@ -33,6 +33,13 @@
 		9660866C2CF9D5220004AF62 /* VIPERModuleAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9660866B2CF9D5220004AF62 /* VIPERModuleAssembly.swift */; };
 		9660866E2CF9D53F0004AF62 /* VIPERModuleTransitionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9660866D2CF9D53F0004AF62 /* VIPERModuleTransitionHandler.swift */; };
 		966086702CF9D5570004AF62 /* VIPERModuleViewOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9660866F2CF9D5570004AF62 /* VIPERModuleViewOutput.swift */; };
+		9660867D2CFA72AB0004AF62 /* TableCellConfiguratorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9660867C2CFA72AB0004AF62 /* TableCellConfiguratorProtocol.swift */; };
+		9660867F2CFA72C20004AF62 /* ViewConfiguratorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9660867E2CFA72C20004AF62 /* ViewConfiguratorProtocol.swift */; };
+		966086812CFA72ED0004AF62 /* Configurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086802CFA72ED0004AF62 /* Configurable.swift */; };
+		966086832CFA74EA0004AF62 /* ToDoListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086822CFA74EA0004AF62 /* ToDoListTableViewCell.swift */; };
+		966086852CFA75300004AF62 /* TableCellConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086842CFA75300004AF62 /* TableCellConfigurator.swift */; };
+		966086892CFA79650004AF62 /* NLTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086882CFA79650004AF62 /* NLTableViewCell.swift */; };
+		9660868D2CFA8B0C0004AF62 /* UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9660868C2CFA8B0C0004AF62 /* UITableView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,6 +72,13 @@
 		9660866B2CF9D5220004AF62 /* VIPERModuleAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VIPERModuleAssembly.swift; sourceTree = "<group>"; };
 		9660866D2CF9D53F0004AF62 /* VIPERModuleTransitionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VIPERModuleTransitionHandler.swift; sourceTree = "<group>"; };
 		9660866F2CF9D5570004AF62 /* VIPERModuleViewOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VIPERModuleViewOutput.swift; sourceTree = "<group>"; };
+		9660867C2CFA72AB0004AF62 /* TableCellConfiguratorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableCellConfiguratorProtocol.swift; sourceTree = "<group>"; };
+		9660867E2CFA72C20004AF62 /* ViewConfiguratorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewConfiguratorProtocol.swift; sourceTree = "<group>"; };
+		966086802CFA72ED0004AF62 /* Configurable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configurable.swift; sourceTree = "<group>"; };
+		966086822CFA74EA0004AF62 /* ToDoListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListTableViewCell.swift; sourceTree = "<group>"; };
+		966086842CFA75300004AF62 /* TableCellConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableCellConfigurator.swift; sourceTree = "<group>"; };
+		966086882CFA79650004AF62 /* NLTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NLTableViewCell.swift; sourceTree = "<group>"; };
+		9660868C2CFA8B0C0004AF62 /* UITableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableView.swift; sourceTree = "<group>"; };
 		98C130EE62F67355F8D64CA6 /* Pods-ToDoList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ToDoList.release.xcconfig"; path = "Target Support Files/Pods-ToDoList/Pods-ToDoList.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -165,6 +179,9 @@
 		966086412CF9CDB40004AF62 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				9660868A2CFA8AD40004AF62 /* Extensions */,
+				966086872CFA795A0004AF62 /* NiblessClasses */,
+				966086862CFA75B70004AF62 /* Configurator */,
 				966086692CF9D5050004AF62 /* Protocols */,
 				966086452CF9CE090004AF62 /* Services */,
 				966086422CF9CDD30004AF62 /* Managers */,
@@ -225,6 +242,9 @@
 			isa = PBXGroup;
 			children = (
 				9660866A2CF9D50F0004AF62 /* VIPERModule */,
+				966086802CFA72ED0004AF62 /* Configurable.swift */,
+				9660867E2CFA72C20004AF62 /* ViewConfiguratorProtocol.swift */,
+				9660867C2CFA72AB0004AF62 /* TableCellConfiguratorProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -320,8 +340,41 @@
 		9660867B2CF9E7470004AF62 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				966086822CFA74EA0004AF62 /* ToDoListTableViewCell.swift */,
 			);
 			path = Cell;
+			sourceTree = "<group>";
+		};
+		966086862CFA75B70004AF62 /* Configurator */ = {
+			isa = PBXGroup;
+			children = (
+				966086842CFA75300004AF62 /* TableCellConfigurator.swift */,
+			);
+			path = Configurator;
+			sourceTree = "<group>";
+		};
+		966086872CFA795A0004AF62 /* NiblessClasses */ = {
+			isa = PBXGroup;
+			children = (
+				966086882CFA79650004AF62 /* NLTableViewCell.swift */,
+			);
+			path = NiblessClasses;
+			sourceTree = "<group>";
+		};
+		9660868A2CFA8AD40004AF62 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				9660868B2CFA8AEE0004AF62 /* UIKit */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		9660868B2CFA8AEE0004AF62 /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+				9660868C2CFA8B0C0004AF62 /* UITableView.swift */,
+			);
+			path = UIKit;
 			sourceTree = "<group>";
 		};
 		A979C17DCF3D09CE1DCDCA30 /* Frameworks */ = {
@@ -447,17 +500,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				9660865A2CF9D49B0004AF62 /* ToDoListRouter.swift in Sources */,
+				966086852CFA75300004AF62 /* TableCellConfigurator.swift in Sources */,
 				966086402CF9CD560004AF62 /* AppCoordinator.swift in Sources */,
 				966086472CF9CE110004AF62 /* ServiceFactory.swift in Sources */,
+				9660867D2CFA72AB0004AF62 /* TableCellConfiguratorProtocol.swift in Sources */,
 				966086232CF9CB000004AF62 /* AppDelegate.swift in Sources */,
 				966086672CF9D4D80004AF62 /* TaskDetailViewController.swift in Sources */,
 				9660865B2CF9D49B0004AF62 /* ToDoListViewController.swift in Sources */,
 				966086572CF9D49B0004AF62 /* ToDoListDataConverter.swift in Sources */,
+				966086812CFA72ED0004AF62 /* Configurable.swift in Sources */,
 				966086582CF9D49B0004AF62 /* ToDoListNetworkService.swift in Sources */,
+				966086832CFA74EA0004AF62 /* ToDoListTableViewCell.swift in Sources */,
 				9660865E2CF9D49B0004AF62 /* ToDoListModel.swift in Sources */,
 				9660865C2CF9D49B0004AF62 /* ToDoListAssembly.swift in Sources */,
 				966086602CF9D49B0004AF62 /* ToDoListTableViewManager.swift in Sources */,
 				966086662CF9D4D80004AF62 /* TaskDetailRouter.swift in Sources */,
+				9660867F2CFA72C20004AF62 /* ViewConfiguratorProtocol.swift in Sources */,
+				9660868D2CFA8B0C0004AF62 /* UITableView.swift in Sources */,
 				9660866E2CF9D53F0004AF62 /* VIPERModuleTransitionHandler.swift in Sources */,
 				9660865F2CF9D49B0004AF62 /* ToDoListViewModel.swift in Sources */,
 				966086682CF9D4D80004AF62 /* TaskDetailAssembly.swift in Sources */,
@@ -468,6 +527,7 @@
 				966086592CF9D49B0004AF62 /* ToDoListPresenter.swift in Sources */,
 				966086442CF9CDDA0004AF62 /* ManagerFactory.swift in Sources */,
 				9660862D2CF9CB000004AF62 /* ToDoList.xcdatamodeld in Sources */,
+				966086892CFA79650004AF62 /* NLTableViewCell.swift in Sources */,
 				966086702CF9D5570004AF62 /* VIPERModuleViewOutput.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

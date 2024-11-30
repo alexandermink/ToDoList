@@ -34,8 +34,9 @@ extension ToDoListTableViewManager: ToDoListTableViewManagerInput {
         
         // Configure your table view here
         //
-        //        tableView.delegate = self
-        //        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(ToDoTableViewCell.self)
         
         //...
         
@@ -54,15 +55,29 @@ extension ToDoListTableViewManager: ToDoListTableViewManagerInput {
 extension ToDoListTableViewManager: UITableViewDataSource {
    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        1
+        viewModel?.rows.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        
+        guard let row = viewModel?.rows[indexPath.row] else {
+            return UITableViewCell()
+        }
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.id, for: indexPath)
+        row.configurator.configure(cell)
+        return cell
+        
     }
     
 }
 
 
 // MARK: - UITableViewDelegate
-//extension ToDoListTableViewManager: UITableViewDelegate {  }
+extension ToDoListTableViewManager: UITableViewDelegate { 
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        viewModel?.rows[indexPath.row].configurator.cellHeight ?? 0
+    }
+    
+}

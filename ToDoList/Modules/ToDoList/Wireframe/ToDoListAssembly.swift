@@ -9,7 +9,9 @@ final class ToDoListAssembly: Assembly {
     
     static func assembleModule() -> Module {
         
-        let networkService = ToDoListNetworkService()
+        let services = ServiceFactory.shared
+        
+        let networkService = ToDoListNetworkService(alamofireService: services.alamofireService)
         let tableViewManager = ToDoListTableViewManager()
         let dataConverter = ToDoListDataConverter()
         
@@ -32,12 +34,4 @@ final class ToDoListAssembly: Assembly {
         return view
     }
 
-}
-
-
-// MARK: - Model
-extension ToDoListAssembly {
-    
-    struct Model: TransitionModel {  }
-    
 }
