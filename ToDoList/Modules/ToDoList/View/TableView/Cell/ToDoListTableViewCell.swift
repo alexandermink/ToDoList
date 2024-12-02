@@ -21,6 +21,7 @@ class ToDoTableViewCell: NLTableViewCell {
     
     // MARK: - Properties
     
+    private var id: Int?
     private let titleLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let dateLabel = UILabel()
@@ -92,6 +93,7 @@ class ToDoTableViewCell: NLTableViewCell {
 extension ToDoTableViewCell: Configurable {
     
     func configure(with model: Model) {
+        id = model.id
         titleLabel.text = model.title
         descriptionLabel.text = model.description
         dateLabel.text = model.date
@@ -111,6 +113,7 @@ extension ToDoTableViewCell {
         
         // MARK: - Properties
         
+        let id: Int
         let title: String
         let description: String?
         let date: String
@@ -119,7 +122,8 @@ extension ToDoTableViewCell {
         
         // MARK: - Init
         
-        init(title: String, description: String?, date: String, isCompleted: Bool) {
+        init(id: Int, title: String, description: String?, date: String, isCompleted: Bool = false) {
+            self.id = id
             self.title = title
             self.description = description
             self.date = date

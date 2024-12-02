@@ -7,12 +7,19 @@
 
 import UIKit
 
-protocol ToDoListViewInput: AnyObject { 
+protocol ToDoListViewInput: Alertable { 
     func update(with viewModel: ToDoListViewModel)
 }
 
 final class ToDoListViewController: UIViewController {
+    
+    // MARK: - Locals
+    
+    private enum Locals {
+        static let navigationTitle = "Задачи"
+    }
 	
+    
     // MARK: - Public properties
     
 	var presenter: ToDoListViewOutput?
@@ -34,13 +41,18 @@ final class ToDoListViewController: UIViewController {
     // MARK: - Private Methods
     
     private func drawSelf() {
+        
+        title = Locals.navigationTitle
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+        
         view.backgroundColor = .black
         
         tableView.backgroundColor = .black
         tableView.separatorStyle = .singleLine
         tableView.separatorColor = .gray
         tableView.showsVerticalScrollIndicator = false
-//        tableView.contentInset = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0)
         tableViewManager?.setup(tableView: tableView)
         
         view.addSubview(tableView)

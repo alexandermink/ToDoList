@@ -17,6 +17,10 @@ final class ManagerFactory {
     
     private let services = ServiceFactory.shared
     
+    var coreDataManager: CoreDataManagerInput {
+        CoreDataManager.shared
+    }
+    
     
     // MARK: - Init
     

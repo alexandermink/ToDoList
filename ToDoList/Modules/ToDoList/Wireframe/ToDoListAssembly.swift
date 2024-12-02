@@ -9,16 +9,19 @@ final class ToDoListAssembly: Assembly {
     
     static func assembleModule() -> Module {
         
+        let managers = ManagerFactory.shared
         let services = ServiceFactory.shared
         
         let networkService = ToDoListNetworkService(alamofireService: services.alamofireService)
         let tableViewManager = ToDoListTableViewManager()
-        let dataConverter = ToDoListDataConverter()
+        let dataConverter = ToDoListDataConverter(coreDataManager: managers.coreDataManager)
         
         let view = ToDoListViewController()
         let router = ToDoListRouter(transition: view)
         let presenter = ToDoListPresenter(dataConverter: dataConverter)
-        let interactor = ToDoListInteractor(networkService: networkService)
+        let interactor = ToDoListInteractor(networkService: networkService,
+                                            coreDataManager: managers.coreDataManager, 
+                                            userDefaults: services.standardUserDefaults)
         
         tableViewManager.delegate = presenter
         
