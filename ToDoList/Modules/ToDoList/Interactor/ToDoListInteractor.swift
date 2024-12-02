@@ -5,8 +5,11 @@
 //  Created Александр Минк on 29.11.2024.
 //
 
+import Foundation
+
 protocol ToDoListInteractorInput { 
-    func fetchTasks(completion: @escaping (ToDoListModel) -> Void)
+    func fetchTasks()
+    func saveTasks(tasks: [TaskModel])
 }
 
 final class ToDoListInteractor {
@@ -16,12 +19,19 @@ final class ToDoListInteractor {
     weak var presenter: ToDoListInteractorOutput?
     
     private let networkService: ToDoListNetworkServiceInput
+    private let coreDataManager: CoreDataManagerInput
+    private let userDefaults: UserDefaults
     
     
     // MARK: - Init
     
-    init(networkService: ToDoListNetworkServiceInput) {
+    init(networkService: ToDoListNetworkServiceInput,
+         coreDataManager: CoreDataManagerInput,
+         userDefaults: UserDefaults) {
+        
         self.networkService = networkService
+        self.coreDataManager = coreDataManager
+        self.userDefaults = userDefaults
     }
     
 }
@@ -30,18 +40,28 @@ final class ToDoListInteractor {
 // MARK: - ToDoListInteractorInput
 extension ToDoListInteractor: ToDoListInteractorInput { 
     
-    func fetchTasks(completion: @escaping (ToDoListModel) -> Void) {
+    func fetchTasks() {
         
-        networkService.fetchTasks { response in
-            switch response {
-            case .success(let data):
-                completion(data)
-            case .failure(let error):
-                // TODO: доработать alert
-                print(error.localizedDescription)
+        if userDefaults.isAppRunBefore {
+            presenter?.updateViewWithTasks(tasks: coreDataManager.fetchTasks())
+        } else {
+            
+            networkService.fetchTasks { response in
+                
+                switch response {
+                case .success(let data):
+                    self.userDefaults.isAppRunBefore = true
+                    self.presenter?.updateViewWithTasks(tasks: data)
+                case .failure(let error):
+                    self.presenter?.showAlert(error: error)
+                }
             }
         }
-        // else coredata fetch
+        
+    }
+    
+    func saveTasks(tasks: [TaskModel]) {
+        coreDataManager.saveTasks(tasks: tasks)
     }
     
 }

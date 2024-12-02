@@ -18,7 +18,7 @@ final class AppCoordinator {
     
     private lazy var rootNavigationController: UINavigationController = {
         let navigationController = UINavigationController()
-        navigationController.isNavigationBarHidden = true
+        navigationController.isNavigationBarHidden = false
         return navigationController
     }()
 }
@@ -34,12 +34,5 @@ extension AppCoordinator: AppCoordinatorInput {
     
     func showNeededFlow() {
         rootNavigationController.viewControllers.append(ToDoListAssembly.assembleModule())
-        
-//        if authorizationManager.isAuthorized {
-//            rootNavigationController.viewControllers.append(LoginAssembly.assembleModule())
-//        } else {
-//            rootNavigationController.viewControllers.append(RegistrationAssembly.assembleModule())
-//        }
-        
     }
 }

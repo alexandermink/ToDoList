@@ -46,7 +46,6 @@ extension ToDoListNetworkService: ToDoListNetworkServiceInput {
             
             switch result {
             case .success(let data):
-//                print(data)
                 completion(.success(data))
             case .failure(let error):
                 completion(.failure(error))

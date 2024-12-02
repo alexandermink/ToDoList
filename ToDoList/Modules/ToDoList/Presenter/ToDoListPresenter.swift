@@ -9,7 +9,11 @@ protocol ToDoListViewOutput: ViewOutput {
     func fetchTasks()
 }
 
-protocol ToDoListInteractorOutput: AnyObject {  }
+protocol ToDoListInteractorOutput: AnyObject { 
+    func updateViewWithTasks(tasks: ToDoListModel)
+    func updateViewWithTasks(tasks: [TaskModel])
+    func showAlert(error: Error)
+}
 
 final class ToDoListPresenter {
     
@@ -35,21 +39,34 @@ final class ToDoListPresenter {
 // MARK: - ToDoListViewOutput
 extension ToDoListPresenter: ToDoListViewOutput {
     
-    func viewIsReady() { 
+    func viewIsReady() {
         fetchTasks()
     }
     
     func fetchTasks() {
-        interactor?.fetchTasks { tasksModel in
-            self.view?.update(with: self.dataConverter.convert(tasksModel))
-        }
+        interactor?.fetchTasks()
     }
     
 }
 
 
 // MARK: - ToDoListInteractorOutput
-extension ToDoListPresenter: ToDoListInteractorOutput {  }
+extension ToDoListPresenter: ToDoListInteractorOutput {
+    
+    func updateViewWithTasks(tasks: ToDoListModel) {
+        interactor?.saveTasks(tasks: dataConverter.convert(tasks))
+        view?.update(with: dataConverter.convert(tasks))
+    }
+    
+    func updateViewWithTasks(tasks: [TaskModel]) {
+        view?.update(with: dataConverter.convert(tasks))
+    }
+    
+    func showAlert(error: Error) {
+        view?.showAlert(title: error.localizedDescription, style: .alert)
+    }
+    
+}
 
 
 // MARK: - ToDoListTableViewManagerDelegate

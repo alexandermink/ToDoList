@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 final class ServiceFactory {
     
@@ -19,6 +18,13 @@ final class ServiceFactory {
     
     var alamofireService: AlamofireServiceInput {
         AlamofireService.shared
+    }
+    
+    
+    // MARK: - Storages
+    
+    var standardUserDefaults: UserDefaults {
+        .standard
     }
     
     
