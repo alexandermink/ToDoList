@@ -35,59 +35,15 @@ final class ToDoListDataConverter {
     // MARK: - Private methods
     
     private func createRow(task: ToDoTask) -> Row {
-        
-        let configurator: TableCellConfiguratorProtocol
-        
-        let date = Date()
-
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/yy"
-        formatter.locale = Locale(identifier: "ru_RU")
-        formatter.timeZone = TimeZone.current
-
-        let dateString = formatter.string(from: date)
-        
-        configurator = ToDoTableViewCellConfigurator(
-            model: ToDoTableViewCell.Model(
-                id: task.id,
-                title: task.todo,
-                description: nil,
-                date: dateString,
-                isCompleted: task.completed
-            ),
-            cellHeight: 90
-        )
-        
-        return .base(configurator)
-        
+        Row(id: task.id, title: task.todo, description: nil, date: Date(), isCompleted: task.completed)
     }
     
     private func createRow(task: TaskModel) -> Row {
-        
-        let configurator: TableCellConfiguratorProtocol
-        
-        let date = task.createdAt
-
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/yy"
-        formatter.locale = Locale(identifier: "ru_RU")
-        formatter.timeZone = TimeZone.current
-
-        let dateString = formatter.string(from: date)
-        
-        configurator = ToDoTableViewCellConfigurator(
-            model: ToDoTableViewCell.Model(
-                id: Int(task.id),
-                title: task.title,
-                description: task.desc,
-                date:  dateString,
-                isCompleted: task.isCompleted
-            ),
-            cellHeight: 90
-        )
-        
-        return .base(configurator)
-        
+        Row(id: Int(task.id),
+            title: task.title,
+            description: task.desc,
+            date: task.createdAt ?? Date(),
+            isCompleted: task.isCompleted)
     }
     
 }
@@ -101,7 +57,7 @@ extension ToDoListDataConverter: ToDoListDataConverterInput {
     }
     
     func convert(_ model: [TaskModel]) -> ToDoListViewModel {
-        ToDoListViewModel(rows: model.sorted { $0.id < $1.id  }.map { createRow(task: $0) })
+        ToDoListViewModel(rows: model.sorted { $1.id < $0.id  }.map { createRow(task: $0) })
     }
     
     func convert(_ model: ToDoListModel) -> [TaskModel] {

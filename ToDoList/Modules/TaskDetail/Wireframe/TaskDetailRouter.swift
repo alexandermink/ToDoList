@@ -5,7 +5,9 @@
 //  Created Александр Минк on 29.11.2024.
 //
 
-protocol TaskDetailRouterInput {  }
+protocol TaskDetailRouterInput { 
+    func closeModule()
+}
 
 final class TaskDetailRouter {
     
@@ -24,4 +26,10 @@ final class TaskDetailRouter {
 
 
 // MARK: - TaskDetailRouterInput
-extension TaskDetailRouter: TaskDetailRouterInput {  }
+extension TaskDetailRouter: TaskDetailRouterInput { 
+    
+    func closeModule() {
+        transition.closeCurrentModule()
+    }
+    
+}
