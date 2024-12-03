@@ -7,9 +7,14 @@
 
 import Foundation
 
-protocol ToDoListInteractorInput { 
+protocol ToDoListInteractorInput {
+    func fetchTask(by id: Int, completion: @escaping (TaskModel) -> Void)
+    func createNewTask()
     func fetchTasks()
+    func toggleTaskCompletion(by id: Int)
     func saveTasks(tasks: [TaskModel])
+    func searchTasks(with searchText: String) -> [TaskModel]?
+    func deleteTask(task: TaskModel)
 }
 
 final class ToDoListInteractor {
@@ -40,6 +45,21 @@ final class ToDoListInteractor {
 // MARK: - ToDoListInteractorInput
 extension ToDoListInteractor: ToDoListInteractorInput { 
     
+    func fetchTask(by id: Int, completion: @escaping (TaskModel) -> Void) {
+        guard let task = coreDataManager.fetchTask(by: id) else {
+            return
+        }
+        completion(task)
+    }
+    
+    func createNewTask() {
+        coreDataManager.createNewTask()
+    }
+    
+    func toggleTaskCompletion(by id: Int) {
+        coreDataManager.toggleTaskCompletion(by: id)
+    }
+    
     func fetchTasks() {
         
         if userDefaults.isAppRunBefore {
@@ -62,6 +82,14 @@ extension ToDoListInteractor: ToDoListInteractorInput {
     
     func saveTasks(tasks: [TaskModel]) {
         coreDataManager.saveTasks(tasks: tasks)
+    }
+    
+    func searchTasks(with searchText: String) -> [TaskModel]? {
+        coreDataManager.searchTasks(with: searchText)
+    }
+    
+    func deleteTask(task: TaskModel) {
+        coreDataManager.delete(task: task)
     }
     
 }

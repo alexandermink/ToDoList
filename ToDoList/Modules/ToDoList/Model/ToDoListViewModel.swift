@@ -5,6 +5,8 @@
 //  Created Александр Минк on 29.11.2024.
 //
 
+import Foundation
+
 struct ToDoListViewModel {
     let rows: [Row]
 }
@@ -13,25 +15,28 @@ struct ToDoListViewModel {
 // MARK: - ToDoListViewModel
 extension ToDoListViewModel {
     
-    enum Row {
+    struct Row {
         
-        case base(TableCellConfiguratorProtocol)
-        
-        
-        // MARK: - Properties
-        
-        var configurator: TableCellConfiguratorProtocol {
+        let reusableIdentifier: String
+        let id: Int
+        let title: String
+        let description: String?
+        let date: Date
+        let isCompleted: Bool
+
+        init(id: Int,
+             title: String,
+             description: String?,
+             date: Date,
+             isCompleted: Bool) {
             
-            switch self {
-            case .base(let configurator):
-                return configurator
-            }
+            self.reusableIdentifier = String(describing: ToDoTableViewCell.self)
+            self.id = id
+            self.title = title
+            self.description = description
+            self.date = date
+            self.isCompleted = isCompleted
         }
-        
-        var id: String {
-            type(of: configurator).id
-        }
-        
     }
     
 }

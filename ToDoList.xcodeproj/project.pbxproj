@@ -46,6 +46,8 @@
 		966086D82CFCD01B0004AF62 /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086D72CFCD01B0004AF62 /* Alertable.swift */; };
 		966086DA2CFCD0360004AF62 /* AlertAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086D92CFCD0360004AF62 /* AlertAction.swift */; };
 		966086DC2CFCD0C70004AF62 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086DB2CFCD0C70004AF62 /* Constants.swift */; };
+		966086EA2CFDE2F70004AF62 /* TaskDetailInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086E32CFDE2F70004AF62 /* TaskDetailInteractor.swift */; };
+		966086ED2CFE0C6B0004AF62 /* NLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086EC2CFE0C6B0004AF62 /* NLViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -91,6 +93,8 @@
 		966086D72CFCD01B0004AF62 /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
 		966086D92CFCD0360004AF62 /* AlertAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertAction.swift; sourceTree = "<group>"; };
 		966086DB2CFCD0C70004AF62 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		966086E32CFDE2F70004AF62 /* TaskDetailInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailInteractor.swift; sourceTree = "<group>"; };
+		966086EC2CFE0C6B0004AF62 /* NLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NLViewController.swift; sourceTree = "<group>"; };
 		98C130EE62F67355F8D64CA6 /* Pods-ToDoList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ToDoList.release.xcconfig"; path = "Target Support Files/Pods-ToDoList/Pods-ToDoList.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -248,6 +252,7 @@
 			children = (
 				966086762CF9E6DA0004AF62 /* Wireframe */,
 				966086772CF9E6DF0004AF62 /* Presenter */,
+				966086DD2CFDE2880004AF62 /* Interactor */,
 				966086792CF9E6FB0004AF62 /* View */,
 			);
 			path = TaskDetail;
@@ -373,6 +378,7 @@
 			isa = PBXGroup;
 			children = (
 				966086882CFA79650004AF62 /* NLTableViewCell.swift */,
+				966086EC2CFE0C6B0004AF62 /* NLViewController.swift */,
 			);
 			path = NiblessClasses;
 			sourceTree = "<group>";
@@ -409,6 +415,14 @@
 				966086D92CFCD0360004AF62 /* AlertAction.swift */,
 			);
 			path = Alertable;
+			sourceTree = "<group>";
+		};
+		966086DD2CFDE2880004AF62 /* Interactor */ = {
+			isa = PBXGroup;
+			children = (
+				966086E32CFDE2F70004AF62 /* TaskDetailInteractor.swift */,
+			);
+			path = Interactor;
 			sourceTree = "<group>";
 		};
 		A979C17DCF3D09CE1DCDCA30 /* Frameworks */ = {
@@ -547,6 +561,7 @@
 				966086582CF9D49B0004AF62 /* ToDoListNetworkService.swift in Sources */,
 				966086D82CFCD01B0004AF62 /* Alertable.swift in Sources */,
 				966086832CFA74EA0004AF62 /* ToDoListTableViewCell.swift in Sources */,
+				966086EA2CFDE2F70004AF62 /* TaskDetailInteractor.swift in Sources */,
 				9660865E2CF9D49B0004AF62 /* ToDoListModel.swift in Sources */,
 				9660865C2CF9D49B0004AF62 /* ToDoListAssembly.swift in Sources */,
 				966086602CF9D49B0004AF62 /* ToDoListTableViewManager.swift in Sources */,
@@ -564,6 +579,7 @@
 				9660864A2CF9D0130004AF62 /* AlamofireService.swift in Sources */,
 				9660866C2CF9D5220004AF62 /* VIPERModuleAssembly.swift in Sources */,
 				966086652CF9D4D80004AF62 /* TaskDetailPresenter.swift in Sources */,
+				966086ED2CFE0C6B0004AF62 /* NLViewController.swift in Sources */,
 				966086592CF9D49B0004AF62 /* ToDoListPresenter.swift in Sources */,
 				966086442CF9CDDA0004AF62 /* ManagerFactory.swift in Sources */,
 				966086892CFA79650004AF62 /* NLTableViewCell.swift in Sources */,

@@ -11,7 +11,15 @@ import CoreData
 
 @objc(TaskModel)
 public class TaskModel: NSManagedObject {
-
+    
+    override public func awakeFromInsert() {
+        super.awakeFromInsert()
+        
+        if createdAt == nil {
+            createdAt = Date()
+        }
+    }
+    
 }
 
 extension TaskModel {
@@ -23,7 +31,7 @@ extension TaskModel {
     @NSManaged public var id: Int64
     @NSManaged public var title: String
     @NSManaged public var desc: String?
-    @NSManaged public var createdAt: Date
+    @NSManaged public var createdAt: Date?
     @NSManaged public var isCompleted: Bool
 
 }

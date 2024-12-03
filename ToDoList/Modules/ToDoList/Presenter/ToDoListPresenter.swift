@@ -7,12 +7,16 @@
 
 protocol ToDoListViewOutput: ViewOutput { 
     func fetchTasks()
+    func createTask()
+    func toggleTaskCompletion(by id: Int)
+    func searchTasks(with searchText: String)
 }
 
 protocol ToDoListInteractorOutput: AnyObject { 
     func updateViewWithTasks(tasks: ToDoListModel)
     func updateViewWithTasks(tasks: [TaskModel])
     func showAlert(error: Error)
+    func didToggleTaskCompletion(by id: Int)
 }
 
 final class ToDoListPresenter {
@@ -39,12 +43,36 @@ final class ToDoListPresenter {
 // MARK: - ToDoListViewOutput
 extension ToDoListPresenter: ToDoListViewOutput {
     
-    func viewIsReady() {
-        fetchTasks()
+    func viewIsReady() {  }
+    
+    func loadViewIfNeeded() {
+        interactor?.fetchTasks()
     }
     
     func fetchTasks() {
         interactor?.fetchTasks()
+    }
+    
+    func createTask() {
+        interactor?.createNewTask()
+        fetchTasks()
+    }
+    
+    func toggleTaskCompletion(by id: Int) {
+        interactor?.toggleTaskCompletion(by: id)
+    }
+    
+    func searchTasks(with searchText: String) {
+        
+        if searchText.isEmpty {
+            fetchTasks()
+        } else {
+            guard let filteredTasks = interactor?.searchTasks(with: searchText) else {
+                return
+            }
+            view?.update(with: dataConverter.convert(filteredTasks))
+        }
+        
     }
     
 }
@@ -66,8 +94,34 @@ extension ToDoListPresenter: ToDoListInteractorOutput {
         view?.showAlert(title: error.localizedDescription, style: .alert)
     }
     
+    func didToggleTaskCompletion(by id: Int) {
+        fetchTasks()
+    }
+    
 }
 
 
 // MARK: - ToDoListTableViewManagerDelegate
-extension ToDoListPresenter: ToDoListTableViewManagerDelegate {  }
+extension ToDoListPresenter: ToDoListTableViewManagerDelegate { 
+    
+    func openTask(by id: Int) {
+        
+        interactor?.fetchTask(by: id) { task in
+            self.router?.openTaskDetail(task: task)
+        }
+    }
+    
+    func deleteTask(by id: Int) {
+        
+        interactor?.fetchTask(by: id) { task in
+            self.interactor?.deleteTask(task: task)
+        }
+        interactor?.fetchTasks()
+    }
+    
+    func didTapStatusButton(forTaskWithID id: Int) {
+        interactor?.toggleTaskCompletion(by: id)
+        fetchTasks()
+    }
+    
+}
