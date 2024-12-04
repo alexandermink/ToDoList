@@ -16,6 +16,7 @@ final class TaskDetailPresenter {
     // MARK: - Properties
     
     weak var view: TaskDetailViewInput?
+    weak var moduleOutput: TaskDetailModuleOutput?
     
     var interactor: TaskDetailInteractorInput?
     var router: TaskDetailRouterInput?
@@ -37,7 +38,16 @@ extension TaskDetailPresenter: TaskDetailViewOutput {
     }
     
     func saveTask(task: TaskModel) {
-        interactor?.saveTask(task: task)
+        interactor?.saveTask(task: task) { result in
+            
+            switch result {
+            case .success(_):
+                self.moduleOutput?.reloadData()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        
     }
     
 }

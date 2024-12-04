@@ -41,13 +41,15 @@
 		9660868D2CFA8B0C0004AF62 /* UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9660868C2CFA8B0C0004AF62 /* UITableView.swift */; };
 		966086942CFC7BFF0004AF62 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086932CFC7BFF0004AF62 /* CoreDataManager.swift */; };
 		966086CA2CFCB4D30004AF62 /* CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 966086C82CFCB4D30004AF62 /* CoreData.xcdatamodeld */; };
-		966086D12CFCB5BE0004AF62 /* TaskModel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086CF2CFCB5BE0004AF62 /* TaskModel+CoreDataClass.swift */; };
+		966086D12CFCB5BE0004AF62 /* TaskEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086CF2CFCB5BE0004AF62 /* TaskEntity+CoreDataClass.swift */; };
 		966086D52CFCC3B90004AF62 /* UserDefaults + Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086D42CFCC3B90004AF62 /* UserDefaults + Properties.swift */; };
 		966086D82CFCD01B0004AF62 /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086D72CFCD01B0004AF62 /* Alertable.swift */; };
 		966086DA2CFCD0360004AF62 /* AlertAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086D92CFCD0360004AF62 /* AlertAction.swift */; };
 		966086DC2CFCD0C70004AF62 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086DB2CFCD0C70004AF62 /* Constants.swift */; };
 		966086EA2CFDE2F70004AF62 /* TaskDetailInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086E32CFDE2F70004AF62 /* TaskDetailInteractor.swift */; };
 		966086ED2CFE0C6B0004AF62 /* NLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086EC2CFE0C6B0004AF62 /* NLViewController.swift */; };
+		966087002D00B5A00004AF62 /* TaskDetailModuleOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966086FF2D00B5A00004AF62 /* TaskDetailModuleOutput.swift */; };
+		966087022D00C3300004AF62 /* TaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966087012D00C3300004AF62 /* TaskModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -88,13 +90,15 @@
 		9660868C2CFA8B0C0004AF62 /* UITableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableView.swift; sourceTree = "<group>"; };
 		966086932CFC7BFF0004AF62 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		966086C92CFCB4D30004AF62 /* CoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreData.xcdatamodel; sourceTree = "<group>"; };
-		966086CF2CFCB5BE0004AF62 /* TaskModel+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaskModel+CoreDataClass.swift"; sourceTree = "<group>"; };
+		966086CF2CFCB5BE0004AF62 /* TaskEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaskEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		966086D42CFCC3B90004AF62 /* UserDefaults + Properties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults + Properties.swift"; sourceTree = "<group>"; };
 		966086D72CFCD01B0004AF62 /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
 		966086D92CFCD0360004AF62 /* AlertAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertAction.swift; sourceTree = "<group>"; };
 		966086DB2CFCD0C70004AF62 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		966086E32CFDE2F70004AF62 /* TaskDetailInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailInteractor.swift; sourceTree = "<group>"; };
 		966086EC2CFE0C6B0004AF62 /* NLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NLViewController.swift; sourceTree = "<group>"; };
+		966086FF2D00B5A00004AF62 /* TaskDetailModuleOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailModuleOutput.swift; sourceTree = "<group>"; };
+		966087012D00C3300004AF62 /* TaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskModel.swift; sourceTree = "<group>"; };
 		98C130EE62F67355F8D64CA6 /* Pods-ToDoList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ToDoList.release.xcconfig"; path = "Target Support Files/Pods-ToDoList/Pods-ToDoList.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -188,7 +192,7 @@
 		9660863D2CF9CC8F0004AF62 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				966086CF2CFCB5BE0004AF62 /* TaskModel+CoreDataClass.swift */,
+				966086CF2CFCB5BE0004AF62 /* TaskEntity+CoreDataClass.swift */,
 				966086C82CFCB4D30004AF62 /* CoreData.xcdatamodeld */,
 			);
 			path = CoreData;
@@ -285,6 +289,7 @@
 			children = (
 				966086552CF9D49B0004AF62 /* ToDoListViewModel.swift */,
 				966086542CF9D49B0004AF62 /* ToDoListModel.swift */,
+				966087012D00C3300004AF62 /* TaskModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -337,6 +342,7 @@
 			isa = PBXGroup;
 			children = (
 				966086612CF9D4D80004AF62 /* TaskDetailPresenter.swift */,
+				966086FF2D00B5A00004AF62 /* TaskDetailModuleOutput.swift */,
 			);
 			path = Presenter;
 			sourceTree = "<group>";
@@ -547,7 +553,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				966086D12CFCB5BE0004AF62 /* TaskModel+CoreDataClass.swift in Sources */,
+				966086D12CFCB5BE0004AF62 /* TaskEntity+CoreDataClass.swift in Sources */,
 				9660865A2CF9D49B0004AF62 /* ToDoListRouter.swift in Sources */,
 				966086852CFA75300004AF62 /* TableCellConfigurator.swift in Sources */,
 				966086402CF9CD560004AF62 /* AppCoordinator.swift in Sources */,
@@ -559,6 +565,7 @@
 				966086572CF9D49B0004AF62 /* ToDoListDataConverter.swift in Sources */,
 				966086812CFA72ED0004AF62 /* Configurable.swift in Sources */,
 				966086582CF9D49B0004AF62 /* ToDoListNetworkService.swift in Sources */,
+				966087002D00B5A00004AF62 /* TaskDetailModuleOutput.swift in Sources */,
 				966086D82CFCD01B0004AF62 /* Alertable.swift in Sources */,
 				966086832CFA74EA0004AF62 /* ToDoListTableViewCell.swift in Sources */,
 				966086EA2CFDE2F70004AF62 /* TaskDetailInteractor.swift in Sources */,
@@ -568,6 +575,7 @@
 				966086662CF9D4D80004AF62 /* TaskDetailRouter.swift in Sources */,
 				9660867F2CFA72C20004AF62 /* ViewConfiguratorProtocol.swift in Sources */,
 				966086CA2CFCB4D30004AF62 /* CoreData.xcdatamodeld in Sources */,
+				966087022D00C3300004AF62 /* TaskModel.swift in Sources */,
 				966086DA2CFCD0360004AF62 /* AlertAction.swift in Sources */,
 				9660868D2CFA8B0C0004AF62 /* UITableView.swift in Sources */,
 				9660866E2CF9D53F0004AF62 /* VIPERModuleTransitionHandler.swift in Sources */,

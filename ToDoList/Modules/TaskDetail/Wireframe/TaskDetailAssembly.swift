@@ -27,6 +27,7 @@ final class TaskDetailAssembly: Assembly {
         presenter.view = view
         presenter.interactor = interactor
         presenter.router = router
+        presenter.moduleOutput = model.moduleOutput
         
         interactor.presenter = presenter
         
@@ -39,8 +40,13 @@ final class TaskDetailAssembly: Assembly {
 // MARK: - Model
 extension TaskDetailAssembly {
     
-    struct Model: TransitionModel { 
+    struct Model: TransitionModel {
+        
+        // MARK: - Properties
+        
+        weak var moduleOutput: TaskDetailModuleOutput?
         let task: TaskModel
+        
     }
     
 }

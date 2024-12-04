@@ -61,17 +61,9 @@ extension ToDoListDataConverter: ToDoListDataConverterInput {
     }
     
     func convert(_ model: ToDoListModel) -> [TaskModel] {
-        var tasks: [TaskModel] = []
-        model.todos.forEach { task in
-            let taskModel = TaskModel(context: coreDataManager.context)
-            taskModel.id = Int64(task.id)
-            taskModel.title = task.todo
-            taskModel.desc = nil
-            taskModel.createdAt = Date()
-            taskModel.isCompleted = task.completed
-            tasks.append(taskModel)
+        model.todos.map {
+            TaskModel(id: Int64($0.id), title: $0.todo, desc: nil, createdAt: Date(), isCompleted: $0.completed)
         }
-        return tasks
     }
     
 }

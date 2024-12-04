@@ -9,6 +9,7 @@ import UIKit
 
 protocol ToDoListViewInput: Alertable { 
     func update(with viewModel: ToDoListViewModel)
+    func reloadData()
 }
 
 final class ToDoListViewController: UIViewController {
@@ -67,6 +68,11 @@ final class ToDoListViewController: UIViewController {
         
         drawSelf()
         presenter?.viewIsReady()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        presenter?.viewWillAppear()
     }
     
     override func loadViewIfNeeded() {
@@ -147,6 +153,10 @@ final class ToDoListViewController: UIViewController {
 
 // MARK: - ToDoListViewInput
 extension ToDoListViewController: ToDoListViewInput {
+    
+    func reloadData() {
+        tableView.reloadData()
+    }
     
     func update(with viewModel: ToDoListViewModel) {
         taskCountLabel.text = "\(viewModel.rows.count)\(Locals.taskCountPrefix)"

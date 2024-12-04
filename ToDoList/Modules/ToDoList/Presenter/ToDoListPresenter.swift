@@ -5,14 +5,16 @@
 //  Created Александр Минк on 29.11.2024.
 //
 
+import Foundation
+
 protocol ToDoListViewOutput: ViewOutput { 
-    func fetchTasks()
     func createTask()
     func toggleTaskCompletion(by id: Int)
     func searchTasks(with searchText: String)
 }
 
 protocol ToDoListInteractorOutput: AnyObject { 
+    func reloadData()
     func updateViewWithTasks(tasks: ToDoListModel)
     func updateViewWithTasks(tasks: [TaskModel])
     func showAlert(error: Error)
@@ -29,12 +31,14 @@ final class ToDoListPresenter {
     var router: ToDoListRouterInput?
 
     private let dataConverter: ToDoListDataConverterInput
+    private let userDefaults: UserDefaults
     
     
     // MARK: - Init
     
-    init(dataConverter: ToDoListDataConverterInput) {
+    init(dataConverter: ToDoListDataConverterInput, userDefaults: UserDefaults) {
         self.dataConverter = dataConverter
+        self.userDefaults = userDefaults
     }
     
 }
@@ -43,34 +47,65 @@ final class ToDoListPresenter {
 // MARK: - ToDoListViewOutput
 extension ToDoListPresenter: ToDoListViewOutput {
     
-    func viewIsReady() {  }
-    
-    func loadViewIfNeeded() {
-        interactor?.fetchTasks()
+    func viewIsReady() { 
+        
+        if !userDefaults.isAppRunBefore {
+            userDefaults.isAppRunBefore = true
+            interactor?.firstFetchTasks { model in
+                self.interactor?.saveTasks(tasks: self.dataConverter.convert(model))
+                self.view?.update(with: self.dataConverter.convert(model))
+            }
+        }
+        
     }
     
-    func fetchTasks() {
-        interactor?.fetchTasks()
+    func viewWillAppear() {
+        reloadData()
+    }
+    
+    func loadViewIfNeeded() {
+        reloadData()
     }
     
     func createTask() {
-        interactor?.createNewTask()
-        fetchTasks()
+        
+        interactor?.createNewTask { result in
+            
+            switch result {
+            case .success(_):
+                self.reloadData()
+            case .failure(let error):
+                self.showAlert(error: error)
+            }
+        }
     }
     
     func toggleTaskCompletion(by id: Int) {
-        interactor?.toggleTaskCompletion(by: id)
+        interactor?.toggleTaskCompletion(by: id) { result in
+            
+            switch result {
+            case .success(_):
+                self.reloadData()
+            case .failure(let error):
+                self.showAlert(error: error)
+            }
+        }
     }
     
     func searchTasks(with searchText: String) {
         
         if searchText.isEmpty {
-            fetchTasks()
+            reloadData()
         } else {
-            guard let filteredTasks = interactor?.searchTasks(with: searchText) else {
-                return
+            interactor?.searchTasks(with: searchText) { result in
+                
+                switch result {
+                case .success(let filteredTasks):
+                    self.view?.update(with: self.dataConverter.convert(filteredTasks))
+                case .failure(let error):
+                    self.showAlert(error: error)
+                }
             }
-            view?.update(with: dataConverter.convert(filteredTasks))
         }
         
     }
@@ -80,6 +115,12 @@ extension ToDoListPresenter: ToDoListViewOutput {
 
 // MARK: - ToDoListInteractorOutput
 extension ToDoListPresenter: ToDoListInteractorOutput {
+    
+    func reloadData() {
+        interactor?.fetchTasks { tasks in
+            self.view?.update(with: self.dataConverter.convert(tasks))
+        }
+    }
     
     func updateViewWithTasks(tasks: ToDoListModel) {
         interactor?.saveTasks(tasks: dataConverter.convert(tasks))
@@ -95,7 +136,7 @@ extension ToDoListPresenter: ToDoListInteractorOutput {
     }
     
     func didToggleTaskCompletion(by id: Int) {
-        fetchTasks()
+        reloadData()
     }
     
 }
@@ -106,22 +147,45 @@ extension ToDoListPresenter: ToDoListTableViewManagerDelegate {
     
     func openTask(by id: Int) {
         
-        interactor?.fetchTask(by: id) { task in
-            self.router?.openTaskDetail(task: task)
+        interactor?.fetchTask(by: id) { result in
+            
+            switch result {
+            case .success(let task):
+                self.router?.openTaskDetail(task: task, moduleOutput: self)
+            case .failure(let error):
+                self.showAlert(error: error)
+            }
         }
     }
     
     func deleteTask(by id: Int) {
         
-        interactor?.fetchTask(by: id) { task in
-            self.interactor?.deleteTask(task: task)
+        interactor?.deleteTask(by: id) { result in
+            
+            switch result {
+            case .success(_):
+                self.reloadData()
+            case .failure(let error):
+                self.showAlert(error: error)
+            }
         }
-        interactor?.fetchTasks()
     }
     
     func didTapStatusButton(forTaskWithID id: Int) {
-        interactor?.toggleTaskCompletion(by: id)
-        fetchTasks()
+        
+        interactor?.toggleTaskCompletion(by: id) { result in
+            
+            switch result {
+            case .success(_):
+                self.reloadData()
+            case .failure(let error):
+                self.showAlert(error: error)
+            }
+        }
     }
     
 }
+
+
+// MARK: - TaskDetailModuleOutput
+extension ToDoListPresenter: TaskDetailModuleOutput {  }

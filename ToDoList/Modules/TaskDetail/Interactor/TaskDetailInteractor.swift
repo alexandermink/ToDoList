@@ -6,7 +6,7 @@
 //
 
 protocol TaskDetailInteractorInput { 
-    func saveTask(task: TaskModel)
+    func saveTask(task: TaskModel, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 final class TaskDetailInteractor {
@@ -30,8 +30,8 @@ final class TaskDetailInteractor {
 // MARK: - TaskDetailInteractorInput
 extension TaskDetailInteractor: TaskDetailInteractorInput {
     
-    func saveTask(task: TaskModel) {
-        coreDataManager.saveTasks(tasks: [task])
+    func saveTask(task: TaskModel, completion: @escaping (Result<Void, Error>) -> Void) {
+        coreDataManager.saveAllTasks([task], completion: completion)
     }
     
 }

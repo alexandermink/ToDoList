@@ -5,6 +5,8 @@
 //  Created Александр Минк on 29.11.2024.
 //
 
+import Foundation
+
 protocol ToDoListNetworkServiceInput { 
     func fetchTasks(completion: @escaping (Result<ToDoListModel, Error>) -> Void)
 }
@@ -44,11 +46,13 @@ extension ToDoListNetworkService: ToDoListNetworkServiceInput {
             headers: nil
         ) { (result: Result<ToDoListModel, Error>) in
             
-            switch result {
-            case .success(let data):
-                completion(.success(data))
-            case .failure(let error):
-                completion(.failure(error))
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    completion(.success(data))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
             }
         }
         

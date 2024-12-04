@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22222" systemVersion="22G630" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
-    <entity name="TaskModel" representedClassName="TaskModel" syncable="YES">
-        <attribute name="createdAt" attributeType="Date" defaultDateTimeInterval="754929420" usesScalarValueType="NO">
+    <entity name="TaskEntity" representedClassName="TaskEntity" syncable="YES">
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO">
             <userInfo>
-                <entry key="Default value" value="Current date"/>
+                <entry key="Default Value" value="CURRENT_DATE"/>
             </userInfo>
         </attribute>
         <attribute name="desc" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="isCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="title" attributeType="String"/>
+        <attribute name="title" attributeType="String" defaultValueString="Введите задание"/>
     </entity>
 </model>
