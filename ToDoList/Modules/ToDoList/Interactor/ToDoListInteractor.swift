@@ -8,13 +8,14 @@
 import Foundation
 
 protocol ToDoListInteractorInput {
-    func fetchTask(by id: Int, completion: @escaping (TaskModel) -> Void)
-    func createNewTask()
-    func fetchTasks()
-    func toggleTaskCompletion(by id: Int)
+    func createNewTask(completion: @escaping (Result<Void, Error>) -> Void)
+    func firstFetchTasks(completion: @escaping (ToDoListModel) -> Void)
+    func fetchTask(by id: Int, completion: @escaping (Result<TaskModel, Error>) -> Void)
+    func fetchTasks(completion: @escaping ([TaskModel]) -> Void)
     func saveTasks(tasks: [TaskModel])
-    func searchTasks(with searchText: String) -> [TaskModel]?
-    func deleteTask(task: TaskModel)
+    func searchTasks(with searchText: String, completion: @escaping (Result<[TaskModel], Error>) -> Void)
+    func toggleTaskCompletion(by id: Int, completion: @escaping (Result<Void, Error>) -> Void)
+    func deleteTask(by id: Int, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 final class ToDoListInteractor {
@@ -25,71 +26,89 @@ final class ToDoListInteractor {
     
     private let networkService: ToDoListNetworkServiceInput
     private let coreDataManager: CoreDataManagerInput
-    private let userDefaults: UserDefaults
     
     
     // MARK: - Init
     
     init(networkService: ToDoListNetworkServiceInput,
-         coreDataManager: CoreDataManagerInput,
-         userDefaults: UserDefaults) {
+         coreDataManager: CoreDataManagerInput) {
         
         self.networkService = networkService
         self.coreDataManager = coreDataManager
-        self.userDefaults = userDefaults
     }
     
 }
 
 
 // MARK: - ToDoListInteractorInput
-extension ToDoListInteractor: ToDoListInteractorInput { 
+extension ToDoListInteractor: ToDoListInteractorInput {
     
-    func fetchTask(by id: Int, completion: @escaping (TaskModel) -> Void) {
-        guard let task = coreDataManager.fetchTask(by: id) else {
-            return
-        }
-        completion(task)
+    func createNewTask(completion: @escaping (Result<Void, Error>) -> Void) {
+        coreDataManager.createNewTask(completion: completion)
     }
     
-    func createNewTask() {
-        coreDataManager.createNewTask()
-    }
-    
-    func toggleTaskCompletion(by id: Int) {
-        coreDataManager.toggleTaskCompletion(by: id)
-    }
-    
-    func fetchTasks() {
+    func firstFetchTasks(completion: @escaping (ToDoListModel) -> Void) {
         
-        if userDefaults.isAppRunBefore {
-            presenter?.updateViewWithTasks(tasks: coreDataManager.fetchTasks())
-        } else {
+        networkService.fetchTasks { response in
             
-            networkService.fetchTasks { response in
-                
-                switch response {
-                case .success(let data):
-                    self.userDefaults.isAppRunBefore = true
-                    self.presenter?.updateViewWithTasks(tasks: data)
-                case .failure(let error):
-                    self.presenter?.showAlert(error: error)
-                }
+            switch response {
+            case .success(let data):
+                completion(data)
+            case .failure(let error):
+                self.presenter?.showAlert(error: error)
             }
         }
+    }
+    
+    func fetchTask(by id: Int, completion: @escaping (Result<TaskModel, Error>) -> Void) {
         
+        coreDataManager.fetchTask(by: Int64(id)) { result in
+            
+            switch result {
+            case .success(let task):
+                completion(.success(task))
+            case .failure(let error):
+                self.presenter?.showAlert(error: error)
+            }
+        }
+    }
+    
+    func fetchTasks(completion: @escaping ([TaskModel]) -> Void) {
+        
+        coreDataManager.fetchAllTasks { result in
+            
+            switch result {
+            case .success(let tasks):
+                completion(tasks)
+            case .failure(let error):
+                self.presenter?.showAlert(error: error)
+            }
+        }
     }
     
     func saveTasks(tasks: [TaskModel]) {
-        coreDataManager.saveTasks(tasks: tasks)
+        
+        coreDataManager.saveAllTasks(tasks) { result in
+            
+            switch result {
+            case .success(_):
+                print("tasks SUCCESS")
+            case .failure(let error):
+                self.presenter?.showAlert(error: error)
+            }
+        }
     }
     
-    func searchTasks(with searchText: String) -> [TaskModel]? {
-        coreDataManager.searchTasks(with: searchText)
+    func searchTasks(with searchText: String, completion: @escaping (Result<[TaskModel], Error>) -> Void) {
+        coreDataManager.searchTasks(with: searchText, completion: completion)
     }
     
-    func deleteTask(task: TaskModel) {
-        coreDataManager.delete(task: task)
+    func toggleTaskCompletion(by id: Int, completion: @escaping (Result<Void, Error>) -> Void) {
+        coreDataManager.toggleTaskCompletion(by: id, completion: completion)
+    }
+    
+    func deleteTask(by id: Int, completion: @escaping (Result<Void, Error>) -> Void) {
+        coreDataManager.deleteTask(by: id, completion: completion)
     }
     
 }

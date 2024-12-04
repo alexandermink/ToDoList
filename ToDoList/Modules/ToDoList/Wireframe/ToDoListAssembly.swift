@@ -18,10 +18,9 @@ final class ToDoListAssembly: Assembly {
         
         let view = ToDoListViewController()
         let router = ToDoListRouter(transition: view)
-        let presenter = ToDoListPresenter(dataConverter: dataConverter)
+        let presenter = ToDoListPresenter(dataConverter: dataConverter, userDefaults: services.standardUserDefaults)
         let interactor = ToDoListInteractor(networkService: networkService,
-                                            coreDataManager: managers.coreDataManager, 
-                                            userDefaults: services.standardUserDefaults)
+                                            coreDataManager: managers.coreDataManager)
         
         tableViewManager.delegate = presenter
         

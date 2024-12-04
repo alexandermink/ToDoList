@@ -103,15 +103,19 @@ final class TaskDetailViewController: NLViewController {
             return
         }
         
-        task.title = titleField.text ?? ""
-        
-        if descriptionView.text == Locals.descriptionViewText {
-            task.desc = nil
-        } else {
-            task.desc = descriptionView.text
+        var desc: String? = nil
+        if descriptionView.text != Locals.descriptionViewText {
+            desc = descriptionView.text
         }
         
-        presenter?.saveTask(task: task)
+        let editedTask = TaskModel(
+            id: task.id,
+            title: titleField.text ?? "",
+            desc: desc,
+            createdAt: task.createdAt,
+            isCompleted: task.isCompleted)
+        
+        presenter?.saveTask(task: editedTask)
     }
     
 }

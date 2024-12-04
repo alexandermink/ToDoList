@@ -6,7 +6,7 @@
 //
 
 protocol ToDoListRouterInput { 
-    func openTaskDetail(task: TaskModel)
+    func openTaskDetail(task: TaskModel, moduleOutput: TaskDetailModuleOutput?)
 }
 
 final class ToDoListRouter {
@@ -28,8 +28,9 @@ final class ToDoListRouter {
 // MARK: - ToDoListRouterInput
 extension ToDoListRouter: ToDoListRouterInput {
     
-    func openTaskDetail(task: TaskModel) {
-        transition.push(with: TaskDetailAssembly.Model(task: task),
+    func openTaskDetail(task: TaskModel, moduleOutput: TaskDetailModuleOutput?) {
+        let model = TaskDetailAssembly.Model(moduleOutput: moduleOutput, task: task)
+        transition.push(with: model,
                         openModuleType: TaskDetailAssembly.self,
                         animated: false)
     }

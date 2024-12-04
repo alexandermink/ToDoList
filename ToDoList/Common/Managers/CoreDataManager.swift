@@ -7,24 +7,24 @@
 
 import CoreData
 
+// MARK: - CoreDataManagerInput
 protocol CoreDataManagerInput {
-    var context: NSManagedObjectContext { get }
-    func createNewTask()
-    func saveTasks(tasks: [TaskModel])
-    func fetchTasks() -> [TaskModel]
-    func fetchTask(by id: Int) -> TaskModel?
-    func delete(task: TaskModel)
-    func searchTasks(with searchText: String) -> [TaskModel]?
-    func toggleTaskCompletion(by id: Int)
+    func createNewTask(completion: @escaping (Result<Void, Error>) -> Void)
+    func fetchTask(by id: Int64, completion: @escaping (Result<TaskModel, Error>) -> Void)
+    func fetchAllTasks(completion: @escaping (Result<[TaskModel], Error>) -> Void)
+    func saveAllTasks(_ task: [TaskModel], completion: @escaping (Result<Void, Error>) -> Void)
+    func searchTasks(with searchText: String, completion: @escaping (Result<[TaskModel], Error>) -> Void)
+    func toggleTaskCompletion(by id: Int, completion: @escaping (Result<Void, Error>) -> Void)
+    func deleteTask(by id: Int, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
-class CoreDataManager {
+final class CoreDataManager {
     
     // MARK: - Locals
     
     private enum Locals {
-        static let title = "Название задачи"
-        static let description = "Описание задачи"
+        static let newTaskTitle = "Введите название"
+        static let newTaskDescription = "Введите описание"
     }
     
     
@@ -32,27 +32,34 @@ class CoreDataManager {
     
     static let shared = CoreDataManager()
     
-    private lazy var persistentContainer: NSPersistentContainer = {
-        
-        let container = NSPersistentContainer(name: "CoreData")
-        container.loadPersistentStores { _, error in
-            if let error = error {
-                fatalError("Unresolved error \(error)")
-            }
-        }
-        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        return container
-    }()
+    private let persistentContainer: NSPersistentContainer
+    
+    private var viewContext: NSManagedObjectContext {
+        return persistentContainer.viewContext
+    }
+    
+    private var backgroundContext: NSManagedObjectContext {
+        return persistentContainer.newBackgroundContext()
+    }
     
     
     // MARK: - Init
     
-    private init() {}
+    private init() {
+        persistentContainer = NSPersistentContainer(name: "CoreData")
+        persistentContainer.loadPersistentStores { _, error in
+            if let error = error {
+                fatalError("Failed to load Core Data stack: \(error)")
+            }
+        }
+        
+        persistentContainer.viewContext.automaticallyMergesChangesFromParent = true
+    }
     
     
     // MARK: - Private methods
     
-    private func saveContext() {
+    private func saveContext(context: NSManagedObjectContext) {
         
         if context.hasChanges {
             do {
@@ -64,20 +71,25 @@ class CoreDataManager {
         }
     }
     
-    private func getNextID() -> Int64 {
-        let fetchRequest: NSFetchRequest<TaskModel> = TaskModel.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "id", ascending: false)]
-        fetchRequest.fetchLimit = 1
+    private func getNextID(completion: @escaping (Int64) -> Void) {
         
-        do {
-            if let task = try context.fetch(fetchRequest).first {
-                return task.id + 1
-            } else {
-                return 0
+        let context = backgroundContext
+        context.perform {
+            
+            let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "id", ascending: false)]
+            fetchRequest.fetchLimit = 1
+            
+            do {
+                if let task = try context.fetch(fetchRequest).first {
+                    completion(task.id + 1)
+                } else {
+                    completion(0)
+                }
+            } catch {
+                completion(0)
+                print("Failed to fetch max id: \(error)")
             }
-        } catch {
-            print("Failed to fetch max id: \(error)")
-            return 0
         }
     }
     
@@ -87,99 +99,264 @@ class CoreDataManager {
 // MARK: - CoreDataManagerInput
 extension CoreDataManager: CoreDataManagerInput {
     
-    var context: NSManagedObjectContext {
-        get {
-            persistentContainer.viewContext
+    // MARK: - Create Task
+    func createNewTask(completion: @escaping (Result<Void, Error>) -> Void) {
+        
+        let context = backgroundContext
+        context.perform {
+            
+            let entity = TaskEntity(context: context)
+            
+            // Получаем следующий ID асинхронно
+            self.getNextID { id in
+                entity.id = id
+                entity.title = Locals.newTaskTitle
+                entity.desc = Locals.newTaskDescription
+                entity.isCompleted = false
+                entity.createdAt = Date()
+                
+                // Сохраняем контекст после обновления данных
+                do {
+                    try context.save()
+                    DispatchQueue.main.async {
+                        completion(.success(()))
+                    }
+                } catch {
+                    context.rollback()
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
+                }
+            }
         }
     }
+
     
-    func createNewTask() {
-        let taskEntity = TaskModel(context: context)
-        taskEntity.id = getNextID()
-        taskEntity.title = Locals.title
-        taskEntity.desc = Locals.description
-        taskEntity.createdAt = Date()
-        taskEntity.isCompleted = false
-        
-        saveContext()
-    }
     
-    func saveTasks(tasks: [TaskModel]) {
-        tasks.forEach { task in
+    // MARK: - Save Tasks
+    func saveAllTasks(_ tasks: [TaskModel], completion: @escaping (Result<Void, Error>) -> Void) {
+        let context = backgroundContext
+        context.perform {
             
-            let fetchRequest: NSFetchRequest<TaskModel> = TaskModel.fetchRequest()
-            
-            if task.id != -1 {
+            for task in tasks {
+                
+                let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
                 fetchRequest.predicate = NSPredicate(format: "id == %d", task.id)
+                fetchRequest.fetchLimit = 1
+                
+                do {
+                    if let existingEntity = try context.fetch(fetchRequest).first {
+                        // Обновляем существующую запись
+                        existingEntity.update(from: task)
+                    } else {
+                        // Создаем новую запись
+                        let newEntity = TaskEntity(context: context)
+                        newEntity.update(from: task)
+                    }
+                } catch {
+                    // Ошибка во время поиска
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
+                    return
+                }
             }
-
-            if (try? context.fetch(fetchRequest))?.isEmpty == true {
-                let taskEntity = TaskModel(context: context)
-                taskEntity.id = task.id == -1 ? getNextID() : task.id
-                taskEntity.title = task.title
-                taskEntity.desc = task.desc
-                taskEntity.createdAt = task.createdAt == nil ? Date() : task.createdAt
-                taskEntity.isCompleted = task.isCompleted
-            }
-        }
-        saveContext()
-    }
-    
-    func toggleTaskCompletion(by id: Int) {
-        
-        let fetchRequest: NSFetchRequest<TaskModel> = TaskModel.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %d", id)
-        
-        do {
-            if let task = try context.fetch(fetchRequest).first {
-                task.isCompleted.toggle()
+            
+            do {
                 try context.save()
+                DispatchQueue.main.async {
+                    completion(.success(()))
+                }
+            } catch {
+                context.rollback()
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
             }
-        } catch {
-            print("Ошибка обновления задачи: \(error)")
-        }
-    }
-    
-    func fetchTasks() -> [TaskModel] {
-        let fetchRequest: NSFetchRequest<TaskModel> = TaskModel.fetchRequest()
-        
-        do {
-            return try context.fetch(fetchRequest)
-        } catch {
-            print("Failed to fetch tasks: \(error)")
-            return []
-        }
-    }
-    
-    func fetchTask(by id: Int) -> TaskModel? {
-        let fetchRequest: NSFetchRequest<TaskModel> = TaskModel.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %d", id)
-        fetchRequest.fetchLimit = 1
-        
-        do {
-            let result = try context.fetch(fetchRequest)
-            return result.first
-        } catch {
-            return nil
-        }
-    }
-    
-    func searchTasks(with searchText: String) -> [TaskModel]? {
-        let fetchRequest: NSFetchRequest<TaskModel> = TaskModel.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchText)
-        
-        do {
-            return try context.fetch(fetchRequest)
-        } catch {
-            print("Error fetching tasks: \(error.localizedDescription)")
-            return nil
         }
     }
 
     
-    func delete(task: TaskModel) {
-        context.delete(task)
-        saveContext()
+    // MARK: - Fetch Task by ID
+    func fetchTask(by id: Int64, completion: @escaping (Result<TaskModel, Error>) -> Void) {
+        
+        let context = backgroundContext
+        context.perform {
+            
+            let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %d", id)
+            fetchRequest.fetchLimit = 1
+            
+            do {
+                if let result = try context.fetch(fetchRequest).first {
+                    let task = TaskModel(entity: result)
+                    
+                    // Переключаемся на главный поток для передачи данных
+                    DispatchQueue.main.async {
+                        completion(.success(task))
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        completion(
+                            .failure(
+                                NSError(
+                                    domain: "TaskNotFound",
+                                    code: 404,
+                                    userInfo: [NSLocalizedDescriptionKey: "Task not found"]
+                                )
+                            )
+                        )
+                    }
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+
+    
+    // MARK: - Fetch All Tasks
+    func fetchAllTasks(completion: @escaping (Result<[TaskModel], Error>) -> Void) {
+        
+        let context = backgroundContext
+        context.perform {
+            
+            let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
+            do {
+                let results = try context.fetch(fetchRequest)
+                let tasks = results.map { TaskModel(entity: $0) }
+                
+                // Переключаемся на главный поток для передачи данных
+                // Как вариант еще можно использовать context.performAndWait()
+                DispatchQueue.main.async {
+                    completion(.success(tasks))
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
     }
     
+    
+    // MARK: -  Search Tasks
+    func searchTasks(with searchText: String, completion: @escaping (Result<[TaskModel], Error>) -> Void) {
+        
+        let context = backgroundContext
+        context.perform {
+            
+            let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchText)
+            
+            do {
+                let results = try context.fetch(fetchRequest)
+                let tasks = results.map { TaskModel(entity: $0) }
+                
+                // Передача результата на главный поток
+                DispatchQueue.main.async {
+                    completion(.success(tasks))
+                }
+            } catch {
+                // Передача ошибки на главный поток
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+
+    
+    // MARK: - Toggle Task Completion
+    func toggleTaskCompletion(by id: Int, completion: @escaping (Result<Void, Error>) -> Void) {
+        let context = backgroundContext
+        context.perform {
+            let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %d", id)
+            fetchRequest.fetchLimit = 1
+            
+            do {
+                if let task = try context.fetch(fetchRequest).first {
+                    // Переключаем состояние выполнения задачи
+                    task.isCompleted.toggle()
+                    
+                    // Сохраняем изменения в контексте
+                    try context.save()
+                    
+                    // Уведомляем об успешной операции на главном потоке
+                    DispatchQueue.main.async {
+                        completion(.success(()))
+                    }
+                } else {
+                    // Если задача не найдена, возвращаем ошибку
+                    DispatchQueue.main.async {
+                        completion(
+                            .failure(
+                                NSError(
+                                    domain: "TaskNotFound",
+                                    code: 404,
+                                    userInfo: [NSLocalizedDescriptionKey: "Task with id:\(id) not found."]
+                                )
+                            )
+                        )
+                    }
+                }
+            } catch {
+                // Обрабатываем ошибки
+                context.rollback()
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+
+    
+    // MARK: - Delete Task
+    func deleteTask(by id: Int, completion: @escaping (Result<Void, Error>) -> Void) {
+        
+        let context = backgroundContext
+        context.perform {
+            
+            let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %d", id)
+            
+            do {
+                let results = try context.fetch(fetchRequest)
+                
+                if let taskToDelete = results.first {
+                    context.delete(taskToDelete)
+                    
+                    // Сохраняем изменения в фоне
+                    try context.save()
+                    
+                    // Передаем успешный результат на главный поток
+                    DispatchQueue.main.async {
+                        completion(.success(()))
+                    }
+                } else {
+                    // Задача не найдена
+                    DispatchQueue.main.async {
+                        completion(
+                            .failure(
+                                NSError(
+                                    domain: "TaskNotFound",
+                                    code: 404,
+                                    userInfo: [NSLocalizedDescriptionKey: "Task not found"]
+                                )
+                            )
+                        )
+                    }
+                }
+            } catch {
+                // В случае ошибки откатываем изменения и передаем ошибку на главный поток
+                context.rollback()
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
 }
