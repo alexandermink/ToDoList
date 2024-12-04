@@ -74,7 +74,7 @@ final class CoreDataManager {
     private func getNextID(completion: @escaping (Int64) -> Void) {
         
         let context = backgroundContext
-        context.perform {
+        context.performAndWait {
             
             let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "id", ascending: false)]
