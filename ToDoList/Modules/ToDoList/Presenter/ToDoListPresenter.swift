@@ -53,7 +53,6 @@ extension ToDoListPresenter: ToDoListViewOutput {
             userDefaults.isAppRunBefore = true
             interactor?.firstFetchTasks { model in
                 self.interactor?.saveTasks(tasks: self.dataConverter.convert(model))
-                self.view?.update(with: self.dataConverter.convert(model))
             }
         }
         

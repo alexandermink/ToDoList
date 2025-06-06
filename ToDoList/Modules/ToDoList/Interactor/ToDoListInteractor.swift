@@ -92,7 +92,7 @@ extension ToDoListInteractor: ToDoListInteractorInput {
             
             switch result {
             case .success(_):
-                print("tasks SUCCESS")
+                self.presenter?.reloadData()
             case .failure(let error):
                 self.presenter?.showAlert(error: error)
             }
@@ -104,11 +104,11 @@ extension ToDoListInteractor: ToDoListInteractorInput {
     }
     
     func toggleTaskCompletion(by id: Int, completion: @escaping (Result<Void, Error>) -> Void) {
-        coreDataManager.toggleTaskCompletion(by: id, completion: completion)
+        coreDataManager.toggleTaskCompletion(by: Int64(id), completion: completion)
     }
     
     func deleteTask(by id: Int, completion: @escaping (Result<Void, Error>) -> Void) {
-        coreDataManager.deleteTask(by: id, completion: completion)
+        coreDataManager.deleteTask(by: Int64(id), completion: completion)
     }
     
 }

@@ -8,7 +8,7 @@
 import UIKit
 
 protocol TaskDetailViewInput: AnyObject { 
-    func setTask(task: TaskModel?)
+    func setTask(task: TaskModel)
 }
 
 final class TaskDetailViewController: NLViewController {
@@ -124,21 +124,21 @@ final class TaskDetailViewController: NLViewController {
 // MARK: - TaskDetailViewInput
 extension TaskDetailViewController: TaskDetailViewInput {
     
-    func setTask(task: TaskModel?) {
+    func setTask(task: TaskModel) {
         
         self.task = task
         
-        titleField.text = task?.title
-        if task?.desc != nil && task?.desc != "" {
-            descriptionView.text = task?.desc
+        titleField.text = task.title
+        if task.desc != nil && task.desc != "" {
+            descriptionView.text = task.desc
         }
         
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/yy"
+        formatter.dateFormat = "dd.MM.yy"
         formatter.locale = Locale(identifier: "ru_RU")
         formatter.timeZone = TimeZone.current
 
-        let dateString = formatter.string(from: task?.createdAt ?? Date())
+        let dateString = formatter.string(from: task.createdAt)
         
         dateLabel.text = dateString
     }

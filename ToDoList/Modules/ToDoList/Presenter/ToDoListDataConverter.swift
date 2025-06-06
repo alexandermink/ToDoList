@@ -42,7 +42,7 @@ final class ToDoListDataConverter {
         Row(id: Int(task.id),
             title: task.title,
             description: task.desc,
-            date: task.createdAt ?? Date(),
+            date: task.createdAt,
             isCompleted: task.isCompleted)
     }
     
@@ -57,7 +57,7 @@ extension ToDoListDataConverter: ToDoListDataConverterInput {
     }
     
     func convert(_ model: [TaskModel]) -> ToDoListViewModel {
-        ToDoListViewModel(rows: model.sorted { $1.id < $0.id  }.map { createRow(task: $0) })
+        ToDoListViewModel(rows: model.sorted { $1.createdAt < $0.createdAt }.map { createRow(task: $0) })
     }
     
     func convert(_ model: ToDoListModel) -> [TaskModel] {
