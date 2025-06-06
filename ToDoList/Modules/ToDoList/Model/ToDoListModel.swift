@@ -5,11 +5,11 @@
 //  Created Александр Минк on 29.11.2024.
 //
 
-struct ToDoListModel: Codable {
+struct ToDoListModel: Codable, Equatable {
     let todos: [ToDoTask]
 }
 
-struct ToDoTask: Codable {
+struct ToDoTask: Codable, Equatable {
     let id: Int
     let todo: String
     let completed: Bool
