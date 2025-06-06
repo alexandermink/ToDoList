@@ -36,13 +36,9 @@ extension ToDoListTableViewManager: ToDoListTableViewManagerInput {
     
     func setup(tableView: UITableView) {
         
-        // Configure your table view here
-        //
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(ToDoTableViewCell.self)
-        
-        //...
         
         self.tableView = tableView
     }
@@ -73,7 +69,7 @@ extension ToDoListTableViewManager: UITableViewDataSource {
         }
         
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/yy"
+        formatter.dateFormat = "dd.MM.yy"
         formatter.locale = Locale(identifier: "ru_RU")
         formatter.timeZone = TimeZone.current
 

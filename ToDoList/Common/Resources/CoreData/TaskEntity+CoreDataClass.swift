@@ -15,9 +15,7 @@ public class TaskEntity: NSManagedObject {
     override public func awakeFromInsert() {
         super.awakeFromInsert()
         
-        if createdAt == nil {
-            createdAt = Date()
-        }
+        createdAt = Date()
     }
     
 }
@@ -29,9 +27,8 @@ extension TaskEntity {
     @NSManaged public var id: Int64
     @NSManaged public var title: String
     @NSManaged public var desc: String?
-    @NSManaged public var createdAt: Date?
+    @NSManaged public var createdAt: Date
     @NSManaged public var isCompleted: Bool
-    
     
     // MARK: - Public methods
     
@@ -39,6 +36,7 @@ extension TaskEntity {
         return NSFetchRequest<TaskEntity>(entityName: "TaskEntity")
     }
     
+    // Обновляет все поля сущности на основе TaskModel
     func update(from model: TaskModel) {
         self.id = model.id
         self.title = model.title
@@ -49,4 +47,4 @@ extension TaskEntity {
 
 }
 
-extension TaskEntity : Identifiable {  }
+extension TaskEntity: Identifiable { }

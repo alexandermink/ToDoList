@@ -15,13 +15,16 @@ struct TaskModel: Identifiable {
     let id: Int64
     let title: String
     let desc: String?
-    let createdAt: Date?
+    let createdAt: Date
     let isCompleted: Bool
-    
     
     // MARK: - Init
 
-    init(id: Int64, title: String, desc: String?, createdAt: Date?, isCompleted: Bool) {
+    init(id: Int64,
+         title: String,
+         desc: String?,
+         createdAt: Date,
+         isCompleted: Bool) {
         self.id = id
         self.title = title
         self.desc = desc
@@ -29,6 +32,7 @@ struct TaskModel: Identifiable {
         self.isCompleted = isCompleted
     }
     
+    // Инициализатор из TaskEntity
     init(entity: TaskEntity) {
         self.id = entity.id
         self.title = entity.title
@@ -36,5 +40,4 @@ struct TaskModel: Identifiable {
         self.createdAt = entity.createdAt
         self.isCompleted = entity.isCompleted
     }
-    
 }
