@@ -32,7 +32,7 @@ extension ToDoListRouter: ToDoListRouterInput {
         let model = TaskDetailAssembly.Model(moduleOutput: moduleOutput, task: task)
         transition.push(with: model,
                         openModuleType: TaskDetailAssembly.self,
-                        animated: false)
+                        animated: true)
     }
     
 }
