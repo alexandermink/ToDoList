@@ -70,6 +70,8 @@ final class TaskDetailViewController: NLViewController {
     // MARK: - Drawning
     
     private func drawSelf() {
+        
+        view.backgroundColor = .black
                 
         [
             titleField, descriptionView, dateLabel
